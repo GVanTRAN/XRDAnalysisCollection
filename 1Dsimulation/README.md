@@ -1,5 +1,7 @@
 # 1D Simulation — TOPAS Cellulose Diffraction Pattern Simulator
 
+![Simulation framework](simulation_framework.png)
+
 Interactive TOPAS-based simulation of the 1D powder-diffraction pattern of a two-phase cellulose Iβ system, with live sliders for crystallite size, preferred orientation, and phase fraction — useful for building physical intuition about how these parameters shape a pattern before running a real Rietveld refinement.
 
 ## Concept
@@ -17,8 +19,8 @@ This folder combines:
 |---|---|
 | `aniso.inc` | TOPAS macro library: `AnisoCS` (ellipsoid / elliptic-cylinder / cuboid anisotropic crystallite-size broadening), `AnisoCSg` (adds a lognormal size distribution on top), and `AnisoCSout` / `AnisoCSgout` (write a text analysis report per phase: metric tensors, rotation matrix, apparent size per reflection). `#include`d by both `.inp` files below. |
 | `cellulose_template.inp` | The parametrized TOPAS input. Both cellulose phases are defined here, but the values that matter for exploration are left as `{Placeholder}` tokens (e.g. `{D_1}`, `{PO_CA1}`) instead of fixed numbers. |
-| *(fixed-value example `.inp`)* | A non-templated version of the same two-phase model with literal numbers in place of the placeholders — runnable directly in TOPAS on its own, useful as a static reference. *(Exact filename wasn't in what you pasted — check your repo and let me know if it's not `cellulose_simulation.inp`.)* |
-| *(Python slider script)* | The interactive driver described below. *(Same caveat — filename not given; I've referred to it as `cellulose_slider_simulation.py` below.)* |
+| `cellulose_current_run.inp` | A non-templated version of the same two-phase model with literal numbers in place of the placeholders — runnable directly in TOPAS on its own, useful as a static reference. *(Exact filename wasn't in what you pasted — check your repo and let me know if it's not `cellulose_simulation.inp`.)* |
+| `simul.py` | The interactive driver described below. *(Same caveat — filename not given; I've referred to it as `cellulose_slider_simulation.py` below.)* |
 
 ## How the slider script works
 
@@ -71,3 +73,7 @@ temp_simulated.xy  (2θ, calculated intensity)
         ▼
 live matplotlib plot
 ```
+
+`simulation_results.png` shows an example of this live plot in action:
+ 
+![Example simulated pattern](simulation_results.png)
