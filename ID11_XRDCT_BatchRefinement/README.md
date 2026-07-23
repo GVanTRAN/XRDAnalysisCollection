@@ -1,6 +1,7 @@
 # ID11 XRD-CT Batch Refinement
 
-![Pigment cross-section sample](pigment.png)
+![ROI region selected on the sample map](pigment.png)
+*The ROI region selected on the total-intensity map (Step 1 output).*
 
 Pipeline for turning a large ESRF **ID11** X-ray Diffraction Computed Tomography (XRD-CT) reconstruction into a quality-filtered batch of per-pixel `.xy` diffraction patterns, ready for automated (TOPAS) profile/Rietveld refinement.
 
@@ -33,9 +34,9 @@ per-pixel .xy files ──► TOPAS batch refinement (see ../../batchrefinement)
 | [`id11_inspectionn.ipynb`](./id11_inspectionn.ipynb) | **Step 1.** RAM-safe inspection of the raw XRD-CT reconstruction; define chemical-phase maps and spatial ROIs; save ROI data to `.npz`. |
 | [`plot_roi_id11.ipynb`](./plot_roi_id11.ipynb) | **Step 2.** Browse saved ROIs pixel-by-pixel or by rectangle, optionally 2×2 spatially bin them, and export every pattern as a headerless `.xy` file. |
 | [`id11_FLAGandSAVE.ipynb`](./id11_FLAGandSAVE.ipynb) | **Step 3.** Flag and discard low-signal pixels using an interactive threshold, save "validated" ROI data, export only the valid `.xy` patterns, and compute one filtered average pattern per ROI. |
-| `pigment.png` | Reference image of the pigment/paint cross-section sample analyzed with this pipeline. |
-| `refining.png` | Example output of the downstream TOPAS batch refinement performed on the exported `.xy` patterns. |
-| `ROI-1 Filter.png`, `ROI-2 Filter.png` | Before/after intensity maps for ROI 1 and ROI 2, showing which pixels were flagged invalid by the Step 3 threshold. |
+| `pigment.png` | The ROI region selected on the sample's total-intensity map (Step 1 output). |
+| `ROI-1 Filter.png`, `ROI-2 Filter.png` | Intensity maps for ROI 1 and ROI 2 **after thresholding** (Step 3) — flagged/invalid pixels highlighted. |
+| `refining.png` | TOPAS batch refinement running on the exported `.xy` patterns (Step 4). |
 
 ## 1. `id11_inspectionn.ipynb` — inspect the reconstruction & define ROIs
 
@@ -73,7 +74,18 @@ Adds a quality-control pass on top of the saved ROIs:
 - **Export valid `.xy` only** — same naming scheme as Step 2, but invalid pixels are skipped entirely, so gaps in the `idx` numbering mark rejected points (`validated_unbinned_xy_id11/`, `validated_binned_xy_id11/`).
 - **Per-ROI filtered average** — averages all *valid* pixels within each ROI into one representative `.xy` pattern per ROI (`average_filtered_patterns_id11/`), useful as a fast single-pattern check before committing to full per-pixel batch refinement.
 
-`ROI-1 Filter.png` and `ROI-2 Filter.png` are examples of the original-vs-filtered map pair this notebook produces for each ROI.
+`ROI-1 Filter.png` and `ROI-2 Filter.png` below show the result of this thresholding step — each ROI's map after invalid pixels have been flagged:
+
+<p align="center">
+  <img src="ROI-1 Filter.png" alt="ROI 1 after thresholding" width="45%">
+  <img src="ROI-2 Filter.png" alt="ROI 2 after thresholding" width="45%">
+</p>
+
+## 4. TOPAS batch refinement
+
+The `.xy` patterns exported in Steps 2 and 3 are the input for batch profile/Rietveld refinement in TOPAS (see the top-level [`batchrefinement/`](../batchrefinement) folder). `refining.png` shows this refinement running on the exported patterns:
+
+![TOPAS batch refinement in progress](refining.png)
 
 ## Recommended execution order
 
